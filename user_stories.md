@@ -8,6 +8,7 @@ Format for User Stories: Format for a user story: As a ____, I want _____ so tha
 * know if the grouping of images affects which product the user chooses so I can put arrange the products on the catalog page in the most effective way.
 * be able to add and remove products from this app easily so I can use it again as we get more products in to sell.
 * have a simple interface for adding and removing products so I can update it myself.
+* have the instructions for the survey on the site spelled out clearly so that we can ensure all participants are giving the feedback we are looking for.
 
 
 ## As a web developer I want to...
@@ -22,3 +23,4 @@ Format for User Stories: Format for a user story: As a ____, I want _____ so tha
 * not see the same picture twice in a row so I don't get confused.
 * see the totals at the end so that I can satisfy my curiosity.
 * know how many screens I will have to go through so that I can remain calm about how long I'll be there.
+* have very clear instructions about what I am choosing so that I can make confident decisions.
