@@ -10,10 +10,15 @@ Format for User Stories: Format for a user story: As a ____, I want _____ so tha
 * have a simple interface for adding and removing products so I can update it myself.
 
 
-## Developer
+## As a web developer I want to...
+* put products into a constructor functions so that it is easy to add and subtract products.
+* write clean code with helpful comment and variable names so that I can understand it the next time I look at it.
+* have a sound plan going in so that I can break the workload down into small chunks.
 * have a simple interface for adding and removing products so I can update it easily.
-* 
 
 
-
-## Focus Grop Member
+## As a focus group member I want to...
+* quickly understand what I'm supposed to do so that I don't have the askt he focus group facilitator for help.
+* not see the same picture twice in a row so I don't get confused.
+* see the totals at the end so that I can satisfy my curiosity.
+* know how many screens I will have to go through so that I can remain calm about how long I'll be there.
