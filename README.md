@@ -21,6 +21,6 @@ Some specifics:
 
 ## Assets Used
 
-This project makes use of the meyerweb reset.css that can be fonud here:
+This project makes use of the meyerweb reset.css that can be found here:
 https://meyerweb.com/eric/tools/css/reset/
 
