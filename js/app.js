@@ -2,12 +2,32 @@
 
 // global variables
 //    array to hold all products
+Product.allProducts = [];
 //    var setsOfThreeShown
+Product.setsOfProductsShown = 0;
+Product.limitOfProductsShown = 25;
 
 // constructor for products
 //    properties: filepath, name, times displayed, times clicked
+function Product(filepath, name, timesDisplayed, timesClicked) {
+  this.filepath = filepath;
+  this.name = name;
+  this.timesDisplayed = timesDisplayed;
+  this.timesClicked = timesClicked;
+  Product.allProducts.push(this);
+}
+
+// instantiate Product instances
+// bag banana bathroom boots breakfast
+new Product('img/bag.jpg', 'Bag', 0, 0);
+new Product('img/banana.jpg', 'Banana', 0, 0);
+new Product('img/bathroom.jpg', 'Bathroom', 0, 0);
+new Product('img/boots.jpg', 'Boots', 0, 0);
+new Product('img/breakfast.jpg', 'Breakfast', 0, 0);
+
 
 // function for choosing a random picture
+//    access dom
 //    ++ times displayed for each
 
 // function for rendering 3 pictures
@@ -17,55 +37,7 @@
 
 // function to display results after 25 guesses
 
-// instantiate instances of the goat function
 
 // event listener
 
 // call function for initially choosing a random picture
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // array to store all goat instances
-  // make a constructor for Goat objects
-  // create instances of Goats
-  // access the image element from the DOM
-  // event listener on the image
-  // callback function for event listener to randomly display a goat image
-    // random number generator to return a number between 0 and the length of the array (Goat.allGoats)
-    // use the random number to display a goat at that random index
-  // invoke the callback on page load to show a random baby goat
