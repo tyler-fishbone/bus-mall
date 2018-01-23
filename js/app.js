@@ -14,9 +14,11 @@ Product.lastDisplayed = [];
 // access section element from the DOM
 var sectionEl = document.getElementById('product-pictures');
 
+// array of all product instances
 Product.allProducts = [];
 Product.setsOfProductsShown = 0;
 Product.limitOfProductsShown = 25;
+
 // array of img IDs
 // Product.imgIds = ['imgOne', 'imgTwo', 'imgThree'];
 var resultsList = document.getElementById('results-list');
@@ -32,7 +34,6 @@ function Product(filepath, name, timesDisplayed, timesClicked) {
 }
 
 // instantiate Product instances
-// bag banana bathroom boots breakfast
 new Product('img/bag.jpg', 'Bag', 0, 0);
 new Product('img/banana.jpg', 'Banana', 0, 0);
 new Product('img/bathroom.jpg', 'Bathroom', 0, 0);
@@ -58,21 +59,6 @@ var imgElOne = document.getElementById('imgOne');
 var imgElTwo = document.getElementById('imgTwo');
 var imgElThree = document.getElementById('imgThree');
 
-function picOneClick() {
-  Product.allProducts[randomIndexOne].timesClicked ++;
-  getSetOfThreeProducts();
-}
-
-function picTwoClick() {
-  Product.allProducts[randomIndexTwo].timesClicked ++;
-  getSetOfThreeProducts();
-}
-
-function picThreeClick() {
-  Product.allProducts[randomIndexThree].timesClicked ++;
-  getSetOfThreeProducts();
-}
-
 function displayResults() {
   var newPrompt = document.getElementById('prompt');
   newPrompt.innerHTML = 'Check out your results!';
@@ -83,7 +69,7 @@ function displayResults() {
   }
 }
 
-// get three random Indexes that are different
+// get three random Indexes that are unique
 function threeRandomIndexes() {
   do {
     randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
@@ -101,13 +87,6 @@ function threeRandomIndexes() {
 }
 
 function getSetOfThreeProducts() {
-  if (Product.setsOfProductsShown === Product.limitOfProductsShown) {
-    imgElOne.removeEventListener('click', picOneClick);
-    imgElTwo.removeEventListener('click', picTwoClick);
-    imgElThree.removeEventListener('click', picThreeClick);
-    displayResults();
-  }
-
   threeRandomIndexes();
   
   // image one
@@ -133,23 +112,27 @@ function handleClick(e) {
   // ++ to all goats shown
   Product.setsOfProductsShown++;
 
+  if (Product.setsOfProductsShown >= Product.limitOfProductsShown) {
+    sectionEl.removeEventListener('click', handleClick);
+    displayResults();
+  }
+
   // loop through and ++ to the timesClicked property
   for(var i in Product.allProducts){
     if(e.target.alt === Product.allProducts[i].name){
       Product.allProducts[i].timesClicked++;
-    }
+    } else {
+    getSetOfThreeProducts();
   }
-
-  
 }
 
 // event listener
 sectionEl.addEventListener('click', handleClick);
 
-// event listener - old
-imgElOne.addEventListener('click', picOneClick);
-imgElTwo.addEventListener('click', picTwoClick);
-imgElThree.addEventListener('click', picThreeClick);
+// // event listener - old
+// imgElOne.addEventListener('click', picOneClick);
+// imgElTwo.addEventListener('click', picTwoClick);
+// imgElThree.addEventListener('click', picThreeClick);
 
 // call function for initially choosing a random picture
 getSetOfThreeProducts();
