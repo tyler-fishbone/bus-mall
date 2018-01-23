@@ -1,30 +1,22 @@
 'use strict';
 
-// global variables
-//    array to hold all products
-
-// indexes to hold different products
-var randomIndexOne;
-var randomIndexTwo;
-var randomIndexThree;
-
-// Array so we can check whether current indexes are different thatn previous
+// Array so we can check whether current set indexes contains no repeats from previous
 Product.lastDisplayed = [];
 
-// access section element from the DOM
+// access DOM to create product pictures
 var sectionEl = document.getElementById('product-pictures');
 
 // array of all product instances
 Product.allProducts = [];
+
+//
 Product.setsOfProductsShown = 0;
 Product.limitOfProductsShown = 25;
 
-// array of img IDs
-// Product.imgIds = ['imgOne', 'imgTwo', 'imgThree'];
+// Access DOM to create list of product clicked on
 var resultsList = document.getElementById('results-list');
 
 // constructor for products
-//    properties: filepath, name, times displayed, times clicked
 function Product(filepath, name, timesDisplayed, timesClicked) {
   this.filepath = filepath;
   this.name = name;
@@ -59,6 +51,63 @@ var imgElOne = document.getElementById('imgOne');
 var imgElTwo = document.getElementById('imgTwo');
 var imgElThree = document.getElementById('imgThree');
 
+// get three random Indexes that are unique
+function threeRandomProducts() {
+  var randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
+  var randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
+  var randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+  
+  // if random indices generated match eachother or any from the previous set, generate new indices
+  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne || Product.lastDisplayed.includes(randomIndexOne) || Product.lastDisplayed.includes(randomIndexTwo) || Product.lastDisplayed.includes(randomIndexThree)) {
+    randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
+    randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
+    randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+    console.log('duplicate!');
+  }
+  
+  // display image One
+  imgElOne.src = Product.allProducts[randomIndexOne].filepath;
+  imgElOne.alt = Product.allProducts[randomIndexOne].name;
+  Product.allProducts[randomIndexOne].timesDisplayed ++;
+  
+  // disply image two
+  imgElTwo.src = Product.allProducts[randomIndexTwo].filepath;
+  imgElTwo.alt = Product.allProducts[randomIndexTwo].name;
+  Product.allProducts[randomIndexTwo].timesDisplayed ++;
+  
+  // display image three
+  imgElThree.src = Product.allProducts[randomIndexThree].filepath;
+  imgElThree.alt = Product.allProducts[randomIndexThree].name;
+  Product.allProducts[randomIndexThree].timesDisplayed ++;
+
+  // load lastDisplayed array so we can check on next click for dups
+  Product.lastDisplayed[0] = randomIndexOne;
+  Product.lastDisplayed[1] = randomIndexTwo;
+  Product.lastDisplayed[2] = randomIndexThree;
+
+  //increment our counter setsOfProductsShows by 1
+  Product.setsOfProductsShown++;
+}
+
+// function that runs when picture is clicked
+function handleClick(e) {
+  // check to see if we have gotten to our limitOfProductShow
+  if (Product.setsOfProductsShown >= Product.limitOfProductsShown) {
+    sectionEl.removeEventListener('click', handleClick);
+    displayResults();
+  } else {
+    threeRandomProducts();
+  }
+  
+  // ++ to the timesClicked property for image user click on
+  for(var i in Product.allProducts){
+    if(e.target.alt === Product.allProducts[i].name){
+      Product.allProducts[i].timesClicked++;
+    }
+  }
+}
+
+// display the results of the survey to the user
 function displayResults() {
   var newPrompt = document.getElementById('prompt');
   newPrompt.innerHTML = 'Check out your results!';
@@ -69,70 +118,8 @@ function displayResults() {
   }
 }
 
-// get three random Indexes that are unique
-function threeRandomIndexes() {
-  do {
-    randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
-    randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
-    randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
-    console.log('duplicate!');
-  }
-  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne || Product.lastDisplayed.includes(randomIndexOne) || Product.lastDisplayed.includes(randomIndexTwo) || Product.lastDisplayed.includes(randomIndexThree));
-
-  // fill lastDisplayed array with indices of array for checking
-  Product.lastDisplayed[0] = randomIndexOne;
-  Product.lastDisplayed[1] = randomIndexTwo;
-  Product.lastDisplayed[2] = randomIndexThree;
-  // console.log(Product.lastDisplayed);
-}
-
-function getSetOfThreeProducts() {
-  threeRandomIndexes();
-  
-  // image one
-  imgElOne.src = Product.allProducts[randomIndexOne].filepath;
-  imgElOne.alt = Product.allProducts[randomIndexOne].name;
-  Product.allProducts[randomIndexOne].timesDisplayed ++;
-
-  //image two
-  imgElTwo.src = Product.allProducts[randomIndexTwo].filepath;
-  imgElTwo.alt = Product.allProducts[randomIndexTwo].name;
-  Product.allProducts[randomIndexTwo].timesDisplayed ++;
-
-  //image three
-  imgElThree.src = Product.allProducts[randomIndexThree].filepath;
-  imgElThree.alt = Product.allProducts[randomIndexThree].name;
-  Product.allProducts[randomIndexThree].timesDisplayed ++;
-
-  Product.setsOfProductsShown++;
-}
-
-// function that runs when picture is clicked
-function handleClick(e) {
-  // ++ to all goats shown
-  Product.setsOfProductsShown++;
-
-  if (Product.setsOfProductsShown >= Product.limitOfProductsShown) {
-    sectionEl.removeEventListener('click', handleClick);
-    displayResults();
-  }
-
-  // loop through and ++ to the timesClicked property
-  for(var i in Product.allProducts){
-    if(e.target.alt === Product.allProducts[i].name){
-      Product.allProducts[i].timesClicked++;
-    } else {
-    getSetOfThreeProducts();
-  }
-}
-
 // event listener
 sectionEl.addEventListener('click', handleClick);
 
-// // event listener - old
-// imgElOne.addEventListener('click', picOneClick);
-// imgElTwo.addEventListener('click', picTwoClick);
-// imgElThree.addEventListener('click', picThreeClick);
-
-// call function for initially choosing a random picture
-getSetOfThreeProducts();
+// call function on page load
+threeRandomProducts();
