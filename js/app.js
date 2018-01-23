@@ -4,30 +4,30 @@
 //    array to hold all products
 
 // indexes to hold different products
-var randomIndexOne = 0;
-var randomIndexTwo = 0;
-var randomIndexThree = 0;
+var randomIndexOne;
+var randomIndexTwo;
+var randomIndexThree;
 
 // Array so we can check whether current indexes are different thatn previous
-// Goat.lastDisplayed = [];
+Product.lastDisplayed = [];
 
-
+// access section element from the DOM
+var sectionEl = document.getElementById('product-pictures');
 
 Product.allProducts = [];
 Product.setsOfProductsShown = 0;
 Product.limitOfProductsShown = 25;
 // array of img IDs
-Product.imgIds = ['imgOne', 'imgTwo', 'imgThree'];
+// Product.imgIds = ['imgOne', 'imgTwo', 'imgThree'];
 var resultsList = document.getElementById('results-list');
 
 // constructor for products
 //    properties: filepath, name, times displayed, times clicked
-function Product(filepath, name, timesDisplayed, timesClicked, previouslyShown) {
+function Product(filepath, name, timesDisplayed, timesClicked) {
   this.filepath = filepath;
   this.name = name;
   this.timesDisplayed = timesDisplayed;
   this.timesClicked = timesClicked;
-  this.previouslyShown = previouslyShown;
   Product.allProducts.push(this);
 }
 
@@ -53,6 +53,7 @@ new Product('img/usb.gif', 'usb', 0, 0);
 new Product('img/water-can.jpg', 'Water Can', 0, 0);
 new Product('img/wine-glass.jpg', 'Wine Glass', 0, 0);
 
+// Acess the DOM to get elements
 var imgElOne = document.getElementById('imgOne');
 var imgElTwo = document.getElementById('imgTwo');
 var imgElThree = document.getElementById('imgThree');
@@ -85,18 +86,18 @@ function displayResults() {
 // get three random Indexes that are different
 function threeRandomIndexes() {
   do {
-    var indexOneChecker = randomIndexOne;
-    var indexTwoChecker = randomIndexTwo;
-    var indexThreeChecker = randomIndexThree;
     randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
     randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
     randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+    console.log('duplicate!');
   }
-  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne);
+  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne || Product.lastDisplayed.includes(randomIndexOne) || Product.lastDisplayed.includes(randomIndexTwo) || Product.lastDisplayed.includes(randomIndexThree));
 
-  console.log(indexOneChecker + ': ' + randomIndexOne);
-  console.log(indexTwoChecker + ': ' + randomIndexTwo);
-  console.log(indexThreeChecker + ': ' + randomIndexThree);
+  // fill lastDisplayed array with indices of array for checking
+  Product.lastDisplayed[0] = randomIndexOne;
+  Product.lastDisplayed[1] = randomIndexTwo;
+  Product.lastDisplayed[2] = randomIndexThree;
+  // console.log(Product.lastDisplayed);
 }
 
 function getSetOfThreeProducts() {
@@ -127,7 +128,25 @@ function getSetOfThreeProducts() {
   Product.setsOfProductsShown++;
 }
 
+// function that runs when picture is clicked
+function handleClick(e) {
+  // ++ to all goats shown
+  Product.setsOfProductsShown++;
+
+  // loop through and ++ to the timesClicked property
+  for(var i in Product.allProducts){
+    if(e.target.alt === Product.allProducts[i].name){
+      Product.allProducts[i].timesClicked++;
+    }
+  }
+
+  
+}
+
 // event listener
+sectionEl.addEventListener('click', handleClick);
+
+// event listener - old
 imgElOne.addEventListener('click', picOneClick);
 imgElTwo.addEventListener('click', picTwoClick);
 imgElThree.addEventListener('click', picThreeClick);
