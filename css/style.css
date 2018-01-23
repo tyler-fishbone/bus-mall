@@ -34,6 +34,16 @@ main h3 {
   margin: 40px 0px 40px 0px;
 }
 
+#results-list {
+  width: 300px;
+  margin: auto;
+  list-style: disc;
+}
+
+ol em {
+  font-weight: bold;
+}
+
 main ul {
   width: 960px;
   margin: 0 auto;

@@ -10,14 +10,16 @@ Product.setsOfProductsShown = 0;
 Product.limitOfProductsShown = 25;
 // array of img IDs
 Product.imgIds = ['imgOne', 'imgTwo', 'imgThree'];
+var resultsList = document.getElementById('results-list');
 
 // constructor for products
 //    properties: filepath, name, times displayed, times clicked
-function Product(filepath, name, timesDisplayed, timesClicked) {
+function Product(filepath, name, timesDisplayed, timesClicked, previouslyShown) {
   this.filepath = filepath;
   this.name = name;
   this.timesDisplayed = timesDisplayed;
   this.timesClicked = timesClicked;
+  this.previouslyShown = previouslyShown;
   Product.allProducts.push(this);
 }
 
@@ -63,22 +65,41 @@ function picThreeClick() {
 }
 
 function displayResults() {
-  alert('Thanks for taking our survey, here are the results');
+  var newPrompt = document.getElementById('prompt');
+  newPrompt.innerHTML = 'Check out your results!';
+  for(var i in Product.allProducts){
+    var olEl = document.createElement('li');
+    olEl.textContent = Product.allProducts[i].timesClicked + ' vote(s) for ' + Product.allProducts[i].name;
+    resultsList.appendChild(olEl);
+  }
 }
 
+// get three random Indexes that are different
+function threeRandomIndexes() {
+  do {
+    var indexOneChecker = randomIndexOne;
+    var indexTwoChecker = randomIndexTwo;
+    var indexThreeChecker = randomIndexThree;
+    randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
+    randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
+    randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+  }
+  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne);
+
+  console.log(indexOneChecker + ': ' + randomIndexOne);
+  console.log(indexTwoChecker + ': ' + randomIndexTwo);
+  console.log(indexThreeChecker + ': ' + randomIndexThree);
+}
 
 function getSetOfThreeProducts() {
-  if (Product.setsOfProductsShown === 10) {
+  if (Product.setsOfProductsShown === Product.limitOfProductsShown) {
     imgElOne.removeEventListener('click', picOneClick);
     imgElTwo.removeEventListener('click', picTwoClick);
     imgElThree.removeEventListener('click', picThreeClick);
     displayResults();
   }
 
-  // get three random Indexes
-  randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
-  randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
-  randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+  threeRandomIndexes();
   
   // image one
   imgElOne.src = Product.allProducts[randomIndexOne].filepath;
@@ -98,13 +119,10 @@ function getSetOfThreeProducts() {
   Product.setsOfProductsShown++;
 }
 
-
 // event listener
-
 imgElOne.addEventListener('click', picOneClick);
 imgElTwo.addEventListener('click', picTwoClick);
 imgElThree.addEventListener('click', picThreeClick);
-
 
 // call function for initially choosing a random picture
 getSetOfThreeProducts();
