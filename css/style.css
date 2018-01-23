@@ -53,6 +53,8 @@ main ul {
 main ul li {
   display: inline-block;
   max-width: 300px;
+  vertical-align: top;
+
 }
 
 main ul li img {

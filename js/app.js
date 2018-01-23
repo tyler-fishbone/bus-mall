@@ -2,9 +2,17 @@
 
 // global variables
 //    array to hold all products
+
+// indexes to hold different products
 var randomIndexOne = 0;
 var randomIndexTwo = 0;
 var randomIndexThree = 0;
+
+// Array so we can check whether current indexes are different thatn previous
+// Goat.lastDisplayed = [];
+
+
+
 Product.allProducts = [];
 Product.setsOfProductsShown = 0;
 Product.limitOfProductsShown = 25;
