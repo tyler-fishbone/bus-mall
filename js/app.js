@@ -2,6 +2,9 @@
 
 // global variables
 //    array to hold all products
+var randomIndexOne = 0;
+var randomIndexTwo = 0;
+var randomIndexThree = 0;
 Product.allProducts = [];
 Product.setsOfProductsShown = 0;
 Product.limitOfProductsShown = 25;
@@ -36,53 +39,71 @@ new Product('img/shark.jpg', 'Shark', 0, 0);
 new Product('img/sweep.png', 'Sweep', 0, 0);
 new Product('img/tauntaun.jpg', 'Tauntaun', 0, 0);
 new Product('img/unicorn.jpg', 'Unicorn', 0, 0);
-new Product('img/usb.jpg', 'usb', 0, 0);
+new Product('img/usb.gif', 'usb', 0, 0);
 new Product('img/water-can.jpg', 'Water Can', 0, 0);
 new Product('img/wine-glass.jpg', 'Wine Glass', 0, 0);
-
 
 var imgElOne = document.getElementById('imgOne');
 var imgElTwo = document.getElementById('imgTwo');
 var imgElThree = document.getElementById('imgThree');
 
-
-// function for choosing a random picture
-function getSetOfThreeProducts() {
-  //    access dom
-  var randomIndex = Math.floor(Math.random() * Product.allProducts.length);
-  imgElOne.src = Product.allProducts[randomIndex].filepath;
-  imgElOne.alt = Product.allProducts[randomIndex].name;
-  Product.allProducts[randomIndex].timesDisplayed ++;
-
-  randomIndex = Math.floor(Math.random() * Product.allProducts.length);
-  imgElTwo.src = Product.allProducts[randomIndex].filepath;
-  imgElTwo.alt = Product.allProducts[randomIndex].name;
-  Product.allProducts[randomIndex].timesDisplayed ++;
-
-  randomIndex = Math.floor(Math.random() * Product.allProducts.length);
-  imgElThree.src = Product.allProducts[randomIndex].filepath;
-  imgElThree.alt = Product.allProducts[randomIndex].name;
-  Product.allProducts[randomIndex].timesDisplayed ++;
-
-  console.log('You\'ve got: ' + imgElOne.alt);
-
-  Product.setsOfProductsShown ++;
-  if sets
-  //      if timesclicked == 25 show results
+function picOneClick() {
+  Product.allProducts[randomIndexOne].timesClicked ++;
+  getSetOfThreeProducts();
 }
 
-// function for rendering 3 pictures
-//    ++ overall counter
-//    ++ times clicked
+function picTwoClick() {
+  Product.allProducts[randomIndexTwo].timesClicked ++;
+  getSetOfThreeProducts();
+}
 
-// function to display results after 25 guesses
+function picThreeClick() {
+  Product.allProducts[randomIndexThree].timesClicked ++;
+  getSetOfThreeProducts();
+}
+
+function displayResults() {
+  alert('Thanks for taking our survey, here are the results');
+}
+
+
+function getSetOfThreeProducts() {
+  if (Product.setsOfProductsShown === 10) {
+    imgElOne.removeEventListener('click', picOneClick);
+    imgElTwo.removeEventListener('click', picTwoClick);
+    imgElThree.removeEventListener('click', picThreeClick);
+    displayResults();
+  }
+
+  // get three random Indexes
+  randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
+  randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
+  randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+  
+  // image one
+  imgElOne.src = Product.allProducts[randomIndexOne].filepath;
+  imgElOne.alt = Product.allProducts[randomIndexOne].name;
+  Product.allProducts[randomIndexOne].timesDisplayed ++;
+
+  //image two
+  imgElTwo.src = Product.allProducts[randomIndexTwo].filepath;
+  imgElTwo.alt = Product.allProducts[randomIndexTwo].name;
+  Product.allProducts[randomIndexTwo].timesDisplayed ++;
+
+  //image three
+  imgElThree.src = Product.allProducts[randomIndexThree].filepath;
+  imgElThree.alt = Product.allProducts[randomIndexThree].name;
+  Product.allProducts[randomIndexThree].timesDisplayed ++;
+
+  Product.setsOfProductsShown++;
+}
 
 
 // event listener
 
-imgElOne.addEventListener('click', getSetOfThreeProducts);
-imgElTwo.addEventListener('click', getSetOfThreeProducts);
-imgElThree.addEventListener('click', getSetOfThreeProducts);
+imgElOne.addEventListener('click', picOneClick);
+imgElTwo.addEventListener('click', picTwoClick);
+imgElThree.addEventListener('click', picThreeClick);
 
 
 // call function for initially choosing a random picture
