@@ -114,6 +114,11 @@ function handleClick(e) {
     threeRandomProducts();
   }
   
+  // Step 1 local storage test
+  // log tested: yes to local storage
+  var d = new Date();
+  localStorage.setItem('tested on click: ' + Product.setsOfProductsShown, d);
+
   // ++ to the timesClicked property for image user click on
   for(var i in Product.allProducts){
     if(e.target.alt === Product.allProducts[i].name){
