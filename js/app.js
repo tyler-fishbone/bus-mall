@@ -172,6 +172,7 @@ function renderChart() {
   var productChart = new Chart(ctx, {
     type: 'bar',
     data: productData,
+    responsive: false,
     options: {
       scales: {
         xAxes: [{
