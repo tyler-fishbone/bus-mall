@@ -2,23 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
   <link rel="stylesheet" type="text/css" href="css/reset.css"/>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
-  <title>Document</title>
+  <title>Busmall Survey</title>
 </head>
 <body>
   <header>
       <h1>BusMall</h1>
       <div>
-        <h2>Products you'd only consider buying while stuck on a bus</h2>
+        <h2>Products you'd only consider buying if you're stuck on a bus</h2>
       </div>
   </header>
   <main>
     <h3 id="prompt">Click on which of these three products you'd be most likely to buy:</h3>
     <ol id="results-list"></ol>
-    <ul>
+    <ul id="product-pictures">
       <li><img id="imgOne" src="" alt=""></li>
       <li><img id="imgTwo" src="" alt=""></li>
       <li><img id="imgThree" src="" alt=""></li>
@@ -29,6 +28,7 @@
     three pictures side by side -->
   </main>
   <footer>
+    <canvas id="chart-placeholder" height="300px" width="600px"></canvas>
     <!-- All rights reserved -->
   </footer>
   <script src="js/app.js" ></script>

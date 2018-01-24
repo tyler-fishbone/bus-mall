@@ -1,38 +1,43 @@
 'use strict';
 
-// global variables
-//    array to hold all products
+// array so we can check whether current set indexes contains no repeats from previous
+Product.lastDisplayed = [];
 
-// indexes to hold different products
-var randomIndexOne = 0;
-var randomIndexTwo = 0;
-var randomIndexThree = 0;
+// access DOM to create product pictures
+var sectionEl = document.getElementById('product-pictures');
 
-// Array so we can check whether current indexes are different thatn previous
-// Goat.lastDisplayed = [];
-
-
-
+// array of all product instances
 Product.allProducts = [];
+
+// hold how many sets of products we've shown so far
 Product.setsOfProductsShown = 0;
-Product.limitOfProductsShown = 25;
-// array of img IDs
-Product.imgIds = ['imgOne', 'imgTwo', 'imgThree'];
+
+// sets how many products we will show
+Product.limitOfProductsShown = 10;
+
+// access DOM to create list of product clicked on
 var resultsList = document.getElementById('results-list');
 
+// array of product names
+var arrayOfProductNames = [];
+
+// array of product clicks
+var arrayOfProductVoteTotals = [];
+
+// array of shown totals
+var arrayOfShownTotals = [];
+
 // constructor for products
-//    properties: filepath, name, times displayed, times clicked
-function Product(filepath, name, timesDisplayed, timesClicked, previouslyShown) {
+function Product(filepath, name, timesShown, timesClicked) {
   this.filepath = filepath;
   this.name = name;
-  this.timesDisplayed = timesDisplayed;
+  this.timesShown = timesShown;
   this.timesClicked = timesClicked;
-  this.previouslyShown = previouslyShown;
   Product.allProducts.push(this);
+  arrayOfProductNames.push(this.name);
 }
 
 // instantiate Product instances
-// bag banana bathroom boots breakfast
 new Product('img/bag.jpg', 'Bag', 0, 0);
 new Product('img/banana.jpg', 'Banana', 0, 0);
 new Product('img/bathroom.jpg', 'Bathroom', 0, 0);
@@ -53,84 +58,140 @@ new Product('img/usb.gif', 'usb', 0, 0);
 new Product('img/water-can.jpg', 'Water Can', 0, 0);
 new Product('img/wine-glass.jpg', 'Wine Glass', 0, 0);
 
+// Acess the DOM to get elements
 var imgElOne = document.getElementById('imgOne');
 var imgElTwo = document.getElementById('imgTwo');
 var imgElThree = document.getElementById('imgThree');
 
-function picOneClick() {
-  Product.allProducts[randomIndexOne].timesClicked ++;
-  getSetOfThreeProducts();
+// get three random Indexes that are unique
+function threeRandomProducts() {
+  var randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
+  var randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
+  var randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+  
+  // if random indices generated match eachother or any from the previous set, generate new indices
+  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne || Product.lastDisplayed.includes(randomIndexOne) || Product.lastDisplayed.includes(randomIndexTwo) || Product.lastDisplayed.includes(randomIndexThree)) {
+    randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
+    randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
+    randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+    console.log('duplicate!');
+  }
+  
+  // display image One
+  imgElOne.src = Product.allProducts[randomIndexOne].filepath;
+  imgElOne.alt = Product.allProducts[randomIndexOne].name;
+  Product.allProducts[randomIndexOne].timesShown ++;
+  
+  // disply image two
+  imgElTwo.src = Product.allProducts[randomIndexTwo].filepath;
+  imgElTwo.alt = Product.allProducts[randomIndexTwo].name;
+  Product.allProducts[randomIndexTwo].timesShown ++;
+  
+  // display image three
+  imgElThree.src = Product.allProducts[randomIndexThree].filepath;
+  imgElThree.alt = Product.allProducts[randomIndexThree].name;
+  Product.allProducts[randomIndexThree].timesShown ++;
+
+  // load lastDisplayed array so we can check on next click for dups
+  Product.lastDisplayed[0] = randomIndexOne;
+  Product.lastDisplayed[1] = randomIndexTwo;
+  Product.lastDisplayed[2] = randomIndexThree;
+
+  //increment our counter setsOfProductsShows by 1
+  Product.setsOfProductsShown++;
 }
 
-function picTwoClick() {
-  Product.allProducts[randomIndexTwo].timesClicked ++;
-  getSetOfThreeProducts();
+// function that runs when picture is clicked
+function handleClick(e) {
+  // check to see if we have gotten to our limitOfProductShow
+  if (Product.setsOfProductsShown >= Product.limitOfProductsShown) {
+    sectionEl.removeEventListener('click', handleClick);
+    updateVoteTotals();
+    updateShownTotals();
+    displayResults();
+    renderChart();
+  } else {
+    threeRandomProducts();
+  }
+  
+  // ++ to the timesClicked property for image user click on
+  for(var i in Product.allProducts){
+    if(e.target.alt === Product.allProducts[i].name){
+      Product.allProducts[i].timesClicked++;
+    }
+  }
 }
 
-function picThreeClick() {
-  Product.allProducts[randomIndexThree].timesClicked ++;
-  getSetOfThreeProducts();
-}
-
+// display the results of the survey to the user
 function displayResults() {
   var newPrompt = document.getElementById('prompt');
   newPrompt.innerHTML = 'Check out your results!';
   for(var i in Product.allProducts){
     var olEl = document.createElement('li');
-    olEl.textContent = Product.allProducts[i].timesClicked + ' vote(s) for ' + Product.allProducts[i].name;
+    olEl.textContent = Product.allProducts[i].timesClicked + ' vote(s) for ' + Product.allProducts[i].name + ' out of ' + Product.allProducts[i].timesClicked + ' times.';
     resultsList.appendChild(olEl);
   }
 }
 
-// get three random Indexes that are different
-function threeRandomIndexes() {
-  do {
-    var indexOneChecker = randomIndexOne;
-    var indexTwoChecker = randomIndexTwo;
-    var indexThreeChecker = randomIndexThree;
-    randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
-    randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
-    randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
+function updateVoteTotals() {
+  for(var i in Product.allProducts){
+    arrayOfProductVoteTotals.push(Product.allProducts[i].timesClicked);
   }
-  while (randomIndexOne === randomIndexTwo || randomIndexTwo === randomIndexThree || randomIndexThree === randomIndexOne);
-
-  console.log(indexOneChecker + ': ' + randomIndexOne);
-  console.log(indexTwoChecker + ': ' + randomIndexTwo);
-  console.log(indexThreeChecker + ': ' + randomIndexThree);
 }
 
-function getSetOfThreeProducts() {
-  if (Product.setsOfProductsShown === Product.limitOfProductsShown) {
-    imgElOne.removeEventListener('click', picOneClick);
-    imgElTwo.removeEventListener('click', picTwoClick);
-    imgElThree.removeEventListener('click', picThreeClick);
-    displayResults();
+function updateShownTotals() {
+  for(var i in Product.allProducts){
+    arrayOfShownTotals.push(Product.allProducts[i].timesShown);
   }
-
-  threeRandomIndexes();
-  
-  // image one
-  imgElOne.src = Product.allProducts[randomIndexOne].filepath;
-  imgElOne.alt = Product.allProducts[randomIndexOne].name;
-  Product.allProducts[randomIndexOne].timesDisplayed ++;
-
-  //image two
-  imgElTwo.src = Product.allProducts[randomIndexTwo].filepath;
-  imgElTwo.alt = Product.allProducts[randomIndexTwo].name;
-  Product.allProducts[randomIndexTwo].timesDisplayed ++;
-
-  //image three
-  imgElThree.src = Product.allProducts[randomIndexThree].filepath;
-  imgElThree.alt = Product.allProducts[randomIndexThree].name;
-  Product.allProducts[randomIndexThree].timesDisplayed ++;
-
-  Product.setsOfProductsShown++;
 }
+
+// render chart for displaying data
+function renderChart() {
+  var ctx = document.getElementById('chart-placeholder').getContext('2d');
+
+  var timesShownData = {
+    label: 'How Many Times the Product was Shown',
+    data: arrayOfShownTotals,
+    backgroundColor: 'rgba(99, 132, 0, 0.6)',
+    borderWidth: 0,
+  };
+
+  var timesClickedData = {
+    label: 'How Many Times the Product was Voted For',
+    data: arrayOfProductVoteTotals,
+    backgroundColor: 'rgba(0, 99, 132, 0.6)',
+    borderWidth: 0,
+  };
+
+  var productData = {
+    labels: arrayOfProductNames,
+    datasets: [timesClickedData, timesShownData]
+  };
+
+  // chart
+  var productChart = new Chart(ctx, {
+    type: 'bar',
+    data: productData,
+    responsive: false,
+    options: {
+      scales: {
+        xAxes: [{
+          barPercentage: 1,
+          categoryPercentage: .6,
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
 
 // event listener
-imgElOne.addEventListener('click', picOneClick);
-imgElTwo.addEventListener('click', picTwoClick);
-imgElThree.addEventListener('click', picThreeClick);
+sectionEl.addEventListener('click', handleClick);
 
-// call function for initially choosing a random picture
-getSetOfThreeProducts();
+// call function on page load
+threeRandomProducts();
