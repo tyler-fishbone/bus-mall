@@ -1,6 +1,6 @@
 'use strict';
 
-// Array so we can check whether current set indexes contains no repeats from previous
+// array so we can check whether current set indexes contains no repeats from previous
 Product.lastDisplayed = [];
 
 // access DOM to create product pictures
@@ -9,20 +9,32 @@ var sectionEl = document.getElementById('product-pictures');
 // array of all product instances
 Product.allProducts = [];
 
-//
+// hold how many sets of products we've shown so far
 Product.setsOfProductsShown = 0;
-Product.limitOfProductsShown = 25;
 
-// Access DOM to create list of product clicked on
+// sets how many products we will show
+Product.limitOfProductsShown = 10;
+
+// access DOM to create list of product clicked on
 var resultsList = document.getElementById('results-list');
 
+// array of product names
+var arrayOfProductNames = [];
+
+// array of product clicks
+var arrayOfProductVoteTotals = [];
+
+// array of shown totals
+var arrayOfShownTotals = [];
+
 // constructor for products
-function Product(filepath, name, timesDisplayed, timesClicked) {
+function Product(filepath, name, timesShown, timesClicked) {
   this.filepath = filepath;
   this.name = name;
-  this.timesDisplayed = timesDisplayed;
+  this.timesShown = timesShown;
   this.timesClicked = timesClicked;
   Product.allProducts.push(this);
+  arrayOfProductNames.push(this.name);
 }
 
 // instantiate Product instances
@@ -68,17 +80,17 @@ function threeRandomProducts() {
   // display image One
   imgElOne.src = Product.allProducts[randomIndexOne].filepath;
   imgElOne.alt = Product.allProducts[randomIndexOne].name;
-  Product.allProducts[randomIndexOne].timesDisplayed ++;
+  Product.allProducts[randomIndexOne].timesShown ++;
   
   // disply image two
   imgElTwo.src = Product.allProducts[randomIndexTwo].filepath;
   imgElTwo.alt = Product.allProducts[randomIndexTwo].name;
-  Product.allProducts[randomIndexTwo].timesDisplayed ++;
+  Product.allProducts[randomIndexTwo].timesShown ++;
   
   // display image three
   imgElThree.src = Product.allProducts[randomIndexThree].filepath;
   imgElThree.alt = Product.allProducts[randomIndexThree].name;
-  Product.allProducts[randomIndexThree].timesDisplayed ++;
+  Product.allProducts[randomIndexThree].timesShown ++;
 
   // load lastDisplayed array so we can check on next click for dups
   Product.lastDisplayed[0] = randomIndexOne;
@@ -94,7 +106,10 @@ function handleClick(e) {
   // check to see if we have gotten to our limitOfProductShow
   if (Product.setsOfProductsShown >= Product.limitOfProductsShown) {
     sectionEl.removeEventListener('click', handleClick);
+    updateVoteTotals();
+    updateShownTotals();
     displayResults();
+    renderChart();
   } else {
     threeRandomProducts();
   }
@@ -113,10 +128,66 @@ function displayResults() {
   newPrompt.innerHTML = 'Check out your results!';
   for(var i in Product.allProducts){
     var olEl = document.createElement('li');
-    olEl.textContent = Product.allProducts[i].timesClicked + ' vote(s) for ' + Product.allProducts[i].name;
+    olEl.textContent = Product.allProducts[i].timesClicked + ' vote(s) for ' + Product.allProducts[i].name + ' out of ' + Product.allProducts[i].timesClicked + ' times.';
     resultsList.appendChild(olEl);
   }
 }
+
+function updateVoteTotals() {
+  for(var i in Product.allProducts){
+    arrayOfProductVoteTotals.push(Product.allProducts[i].timesClicked);
+  }
+}
+
+function updateShownTotals() {
+  for(var i in Product.allProducts){
+    arrayOfShownTotals.push(Product.allProducts[i].timesShown);
+  }
+}
+
+// render chart for displaying data
+function renderChart() {
+  var ctx = document.getElementById('chart-placeholder').getContext('2d');
+
+  var timesShownData = {
+    label: 'How Many Times the Product was Shown',
+    data: arrayOfShownTotals,
+    backgroundColor: 'rgba(99, 132, 0, 0.6)',
+    borderWidth: 0,
+  };
+
+  var timesClickedData = {
+    label: 'How Many Times the Product was Voted For',
+    data: arrayOfProductVoteTotals,
+    backgroundColor: 'rgba(0, 99, 132, 0.6)',
+    borderWidth: 0,
+  };
+
+  var productData = {
+    labels: arrayOfProductNames,
+    datasets: [timesClickedData, timesShownData]
+  };
+
+  // chart
+  var productChart = new Chart(ctx, {
+    type: 'bar',
+    data: productData,
+    options: {
+      scales: {
+        xAxes: [{
+          barPercentage: 1,
+          categoryPercentage: .6,
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
 
 // event listener
 sectionEl.addEventListener('click', handleClick);
