@@ -170,7 +170,7 @@ function renderChart() {
 
   // chart
   var productChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'horizontalBar',
     data: productData,
     responsive: false,
     options: {
