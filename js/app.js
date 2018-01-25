@@ -37,27 +37,6 @@ function Product(filepath, name, timesShown, timesClicked) {
   arrayOfProductNames.push(this.name);
 }
 
-// instantiate Product instances
-new Product('img/bag.jpg', 'Bag', 0, 0);
-new Product('img/banana.jpg', 'Banana', 0, 0);
-new Product('img/bathroom.jpg', 'Bathroom', 0, 0);
-new Product('img/boots.jpg', 'Boots', 0, 0);
-new Product('img/bubblegum.jpg', 'Bubble Gum', 0, 0);
-new Product('img/chair.jpg', 'Chair', 0, 0);
-new Product('img/cthulhu.jpg', 'Cthulhu', 0, 0);
-new Product('img/dog-duck.jpg', 'Dog Duck', 0, 0);
-new Product('img/dragon.jpg', 'Dragon', 0, 0);
-new Product('img/pen.jpg', 'Pen', 0, 0);
-new Product('img/pet-sweep.jpg', 'Pet Sweep', 0, 0);
-new Product('img/scissors.jpg', 'Scissors', 0, 0);
-new Product('img/shark.jpg', 'Shark', 0, 0);
-new Product('img/sweep.png', 'Sweep', 0, 0);
-new Product('img/tauntaun.jpg', 'Tauntaun', 0, 0);
-new Product('img/unicorn.jpg', 'Unicorn', 0, 0);
-new Product('img/usb.gif', 'usb', 0, 0);
-new Product('img/water-can.jpg', 'Water Can', 0, 0);
-new Product('img/wine-glass.jpg', 'Wine Glass', 0, 0);
-
 // Acess the DOM to get elements
 var imgElOne = document.getElementById('imgOne');
 var imgElTwo = document.getElementById('imgTwo');
@@ -74,7 +53,6 @@ function threeRandomProducts() {
     randomIndexOne = Math.floor(Math.random() * Product.allProducts.length);
     randomIndexTwo = Math.floor(Math.random() * Product.allProducts.length);
     randomIndexThree = Math.floor(Math.random() * Product.allProducts.length);
-    console.log('duplicate!');
   }
   
   // display image One
@@ -103,29 +81,72 @@ function threeRandomProducts() {
 
 // function that runs when picture is clicked
 function handleClick(e) {
-  // check to see if we have gotten to our limitOfProductShow
-  if (Product.setsOfProductsShown >= Product.limitOfProductsShown) {
-    sectionEl.removeEventListener('click', handleClick);
-    updateVoteTotals();
-    updateShownTotals();
-    displayResults();
-    renderChart();
-  } else {
-    threeRandomProducts();
-  }
-  
+
   // ++ to the timesClicked property for image user click on
   for(var i in Product.allProducts){
     if(e.target.alt === Product.allProducts[i].name){
       Product.allProducts[i].timesClicked++;
+      console.log(Product.allProducts[i]);
     }
   }
+
+  console.log(Product.setsOfProductsShown);
+  
+  // check to see if we have gotten to our limitOfProductShow
+  if (Product.setsOfProductsShown % 10 === 0) {
+    // sectionEl.removeEventListener('click', handleClick);
+    localStorage.setItem('arrayAllProducts', JSON.stringify(Product.allProducts));
+    localStorage.setItem('arrayProductNames', JSON.stringify(arrayOfProductNames));
+    updateVoteTotals();
+    updateShownTotals();
+    renderChart();
+    displayResults();
+    Product.setsOfProductsShown++;
+  } else {
+    threeRandomProducts();
+  }
+}
+
+function loadLocalStoreage() {
+  if(!localStorage.getItem('arrayAllProducts')){
+    console.log('array all products does not exist');
+    instantiateProductObjects();
+  } else {
+    console.log('array all products exists');
+    var lSData = JSON.parse(localStorage.getItem('arrayAllProducts'));
+    Product.allProducts = lSData;
+    var lSProductNames = JSON.parse(localStorage.getItem('arrayProductNames'));
+    arrayOfProductNames = lSProductNames;
+  }
+}
+
+function instantiateProductObjects() {
+  new Product('img/bag.jpg', 'Bag', 0, 0);
+  new Product('img/banana.jpg', 'Banana', 0, 0);
+  new Product('img/bathroom.jpg', 'Bathroom', 0, 0);
+  new Product('img/boots.jpg', 'Boots', 0, 0);
+  new Product('img/bubblegum.jpg', 'Bubble Gum', 0, 0);
+  new Product('img/cthulhu.jpg', 'Cthulhu', 0, 0);
+  new Product('img/chair.jpg', 'Chair', 0, 0);
+  new Product('img/dragon.jpg', 'Dragon', 0, 0);
+  new Product('img/dog-duck.jpg', 'Dog Duck', 0, 0);
+  new Product('img/pet-sweep.jpg', 'Pet Sweep', 0, 0);
+  new Product('img/pen.jpg', 'Pen', 0, 0);
+  new Product('img/shark.jpg', 'Shark', 0, 0);
+  new Product('img/scissors.jpg', 'Scissors', 0, 0);
+  new Product('img/tauntaun.jpg', 'Tauntaun', 0, 0);
+  new Product('img/sweep.png', 'Sweep', 0, 0);
+  new Product('img/usb.gif', 'usb', 0, 0);
+  new Product('img/unicorn.jpg', 'Unicorn', 0, 0);
+  new Product('img/wine-glass.jpg', 'Wine Glass', 0, 0);
+  new Product('img/water-can.jpg', 'Water Can', 0, 0);
 }
 
 // display the results of the survey to the user
 function displayResults() {
   var newPrompt = document.getElementById('prompt');
-  newPrompt.innerHTML = 'Check out your results!';
+  newPrompt.innerHTML = 'Check out your results below!';
+  removeOList();
   for(var i in Product.allProducts){
     var olEl = document.createElement('li');
     olEl.textContent = Product.allProducts[i].timesClicked + ' vote(s) for ' + Product.allProducts[i].name + ' out of ' + Product.allProducts[i].timesClicked + ' times.';
@@ -133,15 +154,19 @@ function displayResults() {
   }
 }
 
+function removeOList() {
+  document.getElementById('results-list').innerHTML = '';
+}
+
 function updateVoteTotals() {
   for(var i in Product.allProducts){
-    arrayOfProductVoteTotals.push(Product.allProducts[i].timesClicked);
+    arrayOfProductVoteTotals[i] = Product.allProducts[i].timesClicked;
   }
 }
 
 function updateShownTotals() {
   for(var i in Product.allProducts){
-    arrayOfShownTotals.push(Product.allProducts[i].timesShown);
+    arrayOfShownTotals[i] = Product.allProducts[i].timesShown;
   }
 }
 
@@ -169,8 +194,8 @@ function renderChart() {
   };
 
   // chart
-  var productChart = new Chart(ctx, {
-    type: 'bar',
+  var productChart = new Chart(ctx, { //eslint-disable-line
+    type: 'horizontalBar',
     data: productData,
     responsive: false,
     options: {
@@ -189,9 +214,9 @@ function renderChart() {
   });
 }
 
-
 // event listener
 sectionEl.addEventListener('click', handleClick);
 
 // call function on page load
+loadLocalStoreage();
 threeRandomProducts();
