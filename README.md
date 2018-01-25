@@ -8,7 +8,7 @@ It is a project for learning more about HTML CSS and JavaScript, specifically cl
 
 ## Contents
 
-25 Sets fo 3 pictures will be shown and users will be prompted to click on the one of the three that they would be most likely to buy. They will then click on that picture to choose it. Then three more pictures will show up and they will repeat the process. This will happen 25 times.
+The user will be shown 3 pictures will be prompted to click on the one of the three that they would be most likely to buy. They will then click on that picture to choose it. Then three more pictures will show up and they will repeat the process. This will happen 10 times before a chart is deisplayed with their results. They can then choose to keep selecting images and at multiples of 10 the chart below will refresh.
 
 Some specifics:
 * no picture will be shown in back to back sets
@@ -24,3 +24,7 @@ Some specifics:
 This project makes use of the meyerweb reset.css that can be found here:
 https://meyerweb.com/eric/tools/css/reset/
 
+This project also uses the Chart.js. which can be found here:
+http://www.chartjs.org/docs/latest/
+Specific library here:
+https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js
